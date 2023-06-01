@@ -1,0 +1,408 @@
+1
+Given an integer array nums of length n and an integer target, find three integers
+in nums such that the sum is closest to the target.
+Return the sum of the three integers.
+
+You may assume that each input would have exactly one solution.
+
+Example 1:
+Input: nums = [-1,2,1,-4], target = 1
+Output: 2
+
+Explanation: The sum that is closest to the target is 2. (-1 + 2 + 1 = 2).
+ans-:
+import java.util.Arrays;
+
+public class ClosestThreeSum {
+    public static int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int n = nums.length;
+        int closestSum = nums[0] + nums[1] + nums[2];
+
+        for (int i = 0; i < n - 2; i++) {
+            int left = i + 1;
+            int right = n - 1;
+
+            while (left < right) {
+                int sum = nums[i] + nums[left] + nums[right];
+
+                if (sum == target) {
+                    return target;
+                }
+
+                if (Math.abs(sum - target) < Math.abs(closestSum - target)) {
+                    closestSum = sum;
+                }
+
+                if (sum > target) {
+                    right--;
+                } else {
+                    left++;
+                }
+            }
+        }
+
+        return closestSum;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {-1, 2, 1, -4};
+        int target = 1;
+        int result = threeSumClosest(nums, target);
+        System.out.println("Closest sum: " + result);
+    }
+}
+2
+Given an array nums of n integers, return an array of all the unique quadruplets
+[nums[a], nums[b], nums[c], nums[d]] such that:
+           ● 0 <= a, b, c, d < n
+           ● a, b, c, and d are distinct.
+           ● nums[a] + nums[b] + nums[c] + nums[d] == target
+
+You may return the answer in any order.
+
+Example 1:
+Input: nums = [1,0,-1,0,-2,2], target = 0
+Output: [[-2,-1,1,2],[-2,0,0,2],[-1,0,0,1]]
+ans-:
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public class FourSum {
+    public static List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> result = new ArrayList<>();
+        int n = nums.length;
+        Arrays.sort(nums);
+
+        for (int i = 0; i < n - 3; i++) {
+            // Skip duplicates for the first element
+            if (i > 0 && nums[i] == nums[i - 1]) {
+                continue;
+            }
+
+            for (int j = i + 1; j < n - 2; j++) {
+                // Skip duplicates for the second element
+                if (j > i + 1 && nums[j] == nums[j - 1]) {
+                    continue;
+                }
+
+                int left = j + 1;
+                int right = n - 1;
+
+                while (left < right) {
+                    int sum = nums[i] + nums[j] + nums[left] + nums[right];
+
+                    if (sum == target) {
+                        result.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+
+                        // Skip duplicates for the third element
+                        while (left < right && nums[left] == nums[left + 1]) {
+                            left++;
+                        }
+                        left++;
+
+                        // Skip duplicates for the fourth element
+                        while (left < right && nums[right] == nums[right - 1]) {
+                            right--;
+                        }
+                        right--;
+                    } else if (sum < target) {
+                        left++;
+                    } else {
+                        right--;
+                    }
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 0, -1, 0, -2, 2};
+        int target = 0;
+        List<List<Integer>> result = fourSum(nums, target);
+        System.out.println("Quadruplets: " + result);
+    }
+}
+<aside>
+💡 **3**
+A permutation of an array of integers is an arrangement of its members into a
+sequence or linear order.
+
+For example, for arr = [1,2,3], the following are all the permutations of arr:
+[1,2,3], [1,3,2], [2, 1, 3], [2, 3, 1], [3,1,2], [3,2,1].
+
+The next permutation of an array of integers is the next lexicographically greater
+permutation of its integer. More formally, if all the permutations of the array are
+sorted in one container according to their lexicographical order, then the next
+permutation of that array is the permutation that follows it in the sorted container.
+
+If such an arrangement is not possible, the array must be rearranged as the
+lowest possible order (i.e., sorted in ascending order).
+
+● For example, the next permutation of arr = [1,2,3] is [1,3,2].
+● Similarly, the next permutation of arr = [2,3,1] is [3,1,2].
+● While the next permutation of arr = [3,2,1] is [1,2,3] because [3,2,1] does not
+have a lexicographical larger rearrangement.
+
+Given an array of integers nums, find the next permutation of nums.
+The replacement must be in place and use only constant extra memory.
+
+**Example 1:**
+Input: nums = [1,2,3]
+Output: [1,3,2]
+
+ans-:
+public class NextPermutation {
+    public static void nextPermutation(int[] nums) {
+        int n = nums.length;
+        int i = n - 2;
+
+        // Find the decreasing sequence
+        while (i >= 0 && nums[i] >= nums[i + 1]) {
+            i--;
+        }
+
+        if (i >= 0) {
+            int j = n - 1;
+
+            // Find the element greater than nums[i]
+            while (j >= 0 && nums[j] <= nums[i]) {
+                j--;
+            }
+
+            swap(nums, i, j);
+        }
+
+        reverse(nums, i + 1);
+    }
+
+    private static void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    private static void reverse(int[] nums, int start) {
+        int i = start;
+        int j = nums.length - 1;
+
+        while (i < j) {
+            swap(nums, i, j);
+            i++;
+            j--;
+        }
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 3};
+        nextPermutation(nums);
+        System.out.println("Next permutation: " + Arrays.toString(nums));
+    }
+}
+4
+Given a sorted array of distinct integers and a target value, return the index if the
+target is found. If not, return the index where it would be if it were inserted in
+order.
+
+You must write an algorithm with O(log n) runtime complexity.
+
+Example 1:
+Input: nums = [1,3,5,6], target = 5
+Output: 2
+ans-:
+public class SearchInsertPosition {
+    public static int searchInsert(int[] nums, int target) {
+        int left = 0;
+        int right = nums.length - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return left;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 3, 5, 6};
+        int target = 5;
+        int index = searchInsert(nums, target);
+        System.out.println("Index: " + index);
+    }
+}
+<aside>
+💡  **5**
+You are given a large integer represented as an integer array digits, where each
+digits[i] is the ith digit of the integer. The digits are ordered from most significant
+to least significant in left-to-right order. The large integer does not contain any
+leading 0's.
+
+Increment the large integer by one and return the resulting array of digits.
+
+**Example 1:**
+Input: digits = [1,2,3]
+Output: [1,2,4]
+
+**Explanation:** The array represents the integer 123.
+Incrementing by one gives 123 + 1 = 124.
+Thus, the result should be [1,2,4].
+
+ans-:
+public class PlusOne {
+    public static int[] plusOne(int[] digits) {
+        int n = digits.length;
+        int carry = 1;
+
+        for (int i = n - 1; i >= 0; i--) {
+            int sum = digits[i] + carry;
+            digits[i] = sum % 10;
+            carry = sum / 10;
+
+            if (carry == 0) {
+                // No carry, no need to continue
+                return digits;
+            }
+        }
+
+        // If there is still a carry after iterating all digits,
+        // insert a new digit 1 at the beginning of the array
+        int[] result = new int[n + 1];
+        result[0] = 1;
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] digits = {1, 2, 3};
+        int[] result = plusOne(digits);
+        System.out.println("Result: " + Arrays.toString(result));
+    }
+}
+ 6
+Given a non-empty array of integers nums, every element appears twice except
+for one. Find that single one.
+
+You must implement a solution with a linear runtime complexity and use only
+constant extra space.
+
+Example 1:
+Input: nums = [2,2,1]
+Output: 1
+ans-:
+public class SingleNumber {
+    public static int singleNumber(int[] nums) {
+        int result = 0;
+        for (int num : nums) {
+            result ^= num;
+        }
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {2, 2, 1};
+        int result = singleNumber(nums);
+        System.out.println("Single Number: " + result);
+    }
+}
+ 7
+You are given an inclusive range [lower, upper] and a sorted unique integer array
+nums, where all elements are within the inclusive range.
+
+A number x is considered missing if x is in the range [lower, upper] and x is not in
+nums.
+
+Return the shortest sorted list of ranges that exactly covers all the missing
+numbers. That is, no element of nums is included in any of the ranges, and each
+missing number is covered by one of the ranges.
+
+Example 1:
+Input: nums = [0,1,3,50,75], lower = 0, upper = 99
+Output: [[2,2],[4,49],[51,74],[76,99]]
+
+Explanation: The ranges are:
+[2,2]
+[4,49]
+[51,74]
+[76,99]
+ans-:
+import java.util.ArrayList;
+import java.util.List;
+
+public class MissingRanges {
+    public static List<String> findMissingRanges(int[] nums, int lower, int upper) {
+        List<String> result = new ArrayList<>();
+
+        // Helper function to format the range as a string
+        // Handles single numbers and ranges with start and end values
+        // Example: 5 or 3->7
+        // Adapted from: https://leetcode.com/problems/missing-ranges/discuss/50476/Accepted-Java-solution-with-explanation
+        String formatRange(int start, int end) {
+            return (start == end) ? String.valueOf(start) : start + "->" + end;
+        }
+
+        int n = nums.length;
+        int prev = lower - 1; // Set the previous number initially to lower - 1
+
+        // Iterate through the nums array and find missing ranges
+        for (int i = 0; i <= n; i++) {
+            int curr = (i == n) ? upper + 1 : nums[i]; // Set the current number to upper + 1 for the last iteration
+
+            // If there is a gap between the previous and current number
+            if (curr > prev + 1) {
+                result.add(formatRange(prev + 1, curr - 1));
+            }
+
+            prev = curr; // Update the previous number
+        }
+
+        return result;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {0, 1, 3, 50, 75};
+        int lower = 0;
+        int upper = 99;
+        List<String> result = findMissingRanges(nums, lower, upper);
+        System.out.println("Missing Ranges: " + result);
+    }
+}
+8
+Given an array of meeting time intervals where intervals[i] = [starti, endi],
+determine if a person could attend all meetings.
+
+Example 1:
+Input: intervals = [[0,30],[5,10],[15,20]]
+Output: false
+ans-:
+import java.util.Arrays;
+
+public class MeetingRooms {
+    public static boolean canAttendAllMeetings(int[][] intervals) {
+        // Sort the intervals based on the start time
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+
+        // Check for overlapping intervals
+        for (int i = 1; i < intervals.length; i++) {
+            if (intervals[i][0] < intervals[i - 1][1]) {
+                return false; // Overlapping intervals found
+            }
+        }
+
+        return true; // No overlapping intervals found
+    }
+
+    public static void main(String[] args) {
+        int[][] intervals = {{0, 30}, {5, 10}, {15, 20}};
+        boolean canAttend = canAttendAllMeetings(intervals);
+        System.out.println("Can attend all meetings? " + canAttend);
+    }
+}
